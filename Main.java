@@ -141,7 +141,7 @@ class GamePanel extends JPanel implements Runnable{
 					case KeyEvent.VK_ENTER:
 						if(isCrushed()){//如果遊戲結束，則重置數據重新開始遊戲
 							snake.setDirection(Snake.DIRECTION_RIGHT);
-							snake.setSpeed(Snake.SPEED_3);
+							snake.setSpeed(Snake.SPEED);
 							snake.setBody(new LinkedList<Dot>());
 							isFirstRun = true;
 							isStarted = false;
@@ -154,11 +154,6 @@ class GamePanel extends JPanel implements Runnable{
 							isStarted = true;
 						}
 						break;
-					case KeyEvent.VK_F1:snake.setSpeed(Snake.SPEED_1);break;
-					case KeyEvent.VK_F2:snake.setSpeed(Snake.SPEED_2);break;
-					case KeyEvent.VK_F3:snake.setSpeed(Snake.SPEED_3);break;
-					case KeyEvent.VK_F4:snake.setSpeed(Snake.SPEED_4);break;
-					case KeyEvent.VK_F5:snake.setSpeed(Snake.SPEED_5);break;
 					default:
 				}
 			}
@@ -264,8 +259,7 @@ class InformationPanel extends JPanel implements Runnable{
 		//配置幫助信息
 		help[0].setText("Enter開始");
 		help[1].setText("↑ ↓ ← →移動");
-		help[2].setText("F1-F5移動速度");
-		help[3].setText("Enter重新開始");
+		help[2].setText("Enter重新開始");
 		//配置信息面板
 		add(box);
 		box.add(Box.createVerticalStrut(150));
@@ -298,13 +292,9 @@ class Snake{//蛇類
 	public static final int DIRECTION_DOWN = 2;
 	public static final int DIRECTION_LEFT = 3;
 	public static final int DIRECTION_RIGHT = 4;
-	public static final int SPEED_1 = 140;
-	public static final int SPEED_2 = 140;
-	public static final int SPEED_3 = 140;
-	public static final int SPEED_4 = 140;
-	public static final int SPEED_5 = 140;
+	public static final int SPEED = 140;
 	private int direction = DIRECTION_RIGHT;
-	private int speed = SPEED_1;
+	private int speed = SPEED;
 	private Dot head = new Dot();
 	private LinkedList<Dot> body = new LinkedList<Dot>();
 	public Snake(){
