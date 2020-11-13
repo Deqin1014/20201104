@@ -3,23 +3,21 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 public class Main extends JFrame{
-	private static GamePanel p1 = new GamePanel();//創建遊戲面板
-	private static InformationPanel p2 = new InformationPanel();//創建信息面板
-	public Main(){//配置框架的佈局
+	private static GamePanel p1 = new GamePanel();
+	private static InformationPanel p2 = new InformationPanel();
+	public Main(){
 		setLayout(new BorderLayout());
 		add(p1,BorderLayout.CENTER);
         add(p2,BorderLayout.EAST);
 	}
 	public static void main(String[] args){
-		JFrame frame = new Main();//新建框架
-		//配置框架
-		frame.setTitle("貪吃蛇");
+		JFrame frame = new Main();
+		frame.setTitle("Snake");
 		frame.setSize(1100, 800);
 		frame.setVisible(true);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-		//新建線程
 		Thread thread1 = new Thread(p1);
 		thread1.start();
 		Thread thread2 = new Thread(p2);
@@ -27,33 +25,28 @@ public class Main extends JFrame{
 	}
 }
 class GamePanel extends JPanel implements Runnable{
-	public static final int PER_UNIT_LENGTH = 20;//單位長度
-	public static final int MULTIPLE = 15;//倍數
-	public static final int HALF_SIDE = MULTIPLE * PER_UNIT_LENGTH;//遊戲邊框的一半長 = 倍數 * 單位長度
-	private boolean isFirstRun = true;//判斷是否需要初始化
-	private boolean isStarted = false;//判斷是否開始
-	private boolean isPaused = false;//判斷是否暫停
-	private static int score = 0;//遊戲分數
-	private static int information = 0;//傳遞遊戲信息
-	private Snake snake = new Snake();//新建一條蛇
-	private Dot dessert = new Dot();//新建一個點心
+	public static final int PER_UNIT_LENGTH = 20;
+	public static final int MULTIPLE = 15;
+	public static final int HALF_SIDE = MULTIPLE * PER_UNIT_LENGTH;
+	private boolean isFirstRun = true;
+	private boolean isStarted = false;
+	private boolean isPaused = false;
+	private static int score = 0;
+	private static int information = 0;
+	private Snake snake = new Snake();
+	private Dot dessert = new Dot();
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
-		//獲取中點座標
 		int xCentre = getWidth() / 2;
 		int yCentre = getHeight() / 2;
-		//獲取一個隨機點座標
 		int xRandom, yRandom;
 		if(isFirstRun){
 			isFirstRun = false;
-			//初始化遊戲邊框
 			g.drawRect(xCentre - HALF_SIDE, yCentre - HALF_SIDE, HALF_SIDE * 2, HALF_SIDE * 2);
-			//初始化蛇頭
 			snake.getHead().setX(xCentre);
 			snake.getHead().setY(yCentre);
 			g.setColor(Color.ORANGE);
 			g.fillOval(snake.getHead().getX(), snake.getHead().getY(), PER_UNIT_LENGTH, PER_UNIT_LENGTH);
-			//初始化點心
 			do{
 				xRandom = xCentre - HALF_SIDE + ((int)(Math.random() * MULTIPLE * 2)) * PER_UNIT_LENGTH;
 				yRandom = yCentre - HALF_SIDE + ((int)(Math.random() * MULTIPLE * 2)) * PER_UNIT_LENGTH;
@@ -64,17 +57,14 @@ class GamePanel extends JPanel implements Runnable{
 			g.fillOval(dessert.getX(), dessert.getY(), PER_UNIT_LENGTH, PER_UNIT_LENGTH);
 		}
 		else{
-			//繪畫遊戲邊框
+			
 			g.drawRect(xCentre - HALF_SIDE, yCentre - HALF_SIDE, HALF_SIDE * 2, HALF_SIDE * 2);
-			//繪畫蛇身
 			g.setColor(Color.MAGENTA);
 			for(int i = 0;i < snake.getBody().size();i++){
 				g.fillOval(snake.getBody().get(i).getX(), snake.getBody().get(i).getY(), PER_UNIT_LENGTH, PER_UNIT_LENGTH);
 			}
-			//繪畫蛇頭
 			g.setColor(Color.ORANGE);
 			g.fillOval(snake.getHead().getX(), snake.getHead().getY(), PER_UNIT_LENGTH, PER_UNIT_LENGTH);
-			//如果蛇吃到點心，則更新點心
 			if(isEncountered()){
 				do{
 					xRandom = xCentre - HALF_SIDE + ((int)(Math.random() * MULTIPLE * 2)) * PER_UNIT_LENGTH;
@@ -85,7 +75,6 @@ class GamePanel extends JPanel implements Runnable{
 			}
 			g.setColor(Color.DARK_GRAY);
 			g.fillOval(dessert.getX(), dessert.getY(), PER_UNIT_LENGTH, PER_UNIT_LENGTH);
-			//如果遊戲結束，則追加繪畫GAME OVER
 			if(isCrushed()){
 				g.setColor(Color.BLACK);
 				FontMetrics fm = g.getFontMetrics();
@@ -98,10 +87,8 @@ class GamePanel extends JPanel implements Runnable{
 		}
 	}
 	public GamePanel(){
-		//配置面板屬性
 		setFocusable(true);
 		setFont(new Font("Californian FB", Font.BOLD, 80));
-		//註冊鍵盤監聽器
 		addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
 				int direction = snake.getDirection();
@@ -139,7 +126,7 @@ class GamePanel extends JPanel implements Runnable{
 						}
 						break;
 					case KeyEvent.VK_ENTER:
-						if(isCrushed()){//如果遊戲結束，則重置數據重新開始遊戲
+						if(isCrushed()){
 							snake.setDirection(Snake.DIRECTION_RIGHT);
 							snake.setSpeed(Snake.SPEED);
 							snake.setBody(new LinkedList<Dot>());
@@ -159,7 +146,7 @@ class GamePanel extends JPanel implements Runnable{
 			}
 		});
 	}
-	public void run(){//控制蛇自動前進
+	public void run(){
 		while(true){
 			if(isStarted && !isPaused && !isCrushed()){
 				changeSnakeLocation();
@@ -172,11 +159,9 @@ class GamePanel extends JPanel implements Runnable{
 			}
 		}
 	}
-	public synchronized void changeSnakeLocation(){//改變蛇的位置信息並重畫
-		//存儲蛇頭先前的信息，爲蛇身的更新提供依據
+	public synchronized void changeSnakeLocation(){
 		int xPrevious = snake.getHead().getX();
 		int yPrevious = snake.getHead().getY();
-		//更新蛇頭位置
 		switch(snake.getDirection()){
 			case Snake.DIRECTION_UP:snake.getHead().setY(yPrevious - PER_UNIT_LENGTH);break;
 			case Snake.DIRECTION_DOWN:snake.getHead().setY(yPrevious + PER_UNIT_LENGTH);break;
@@ -184,7 +169,6 @@ class GamePanel extends JPanel implements Runnable{
 			case Snake.DIRECTION_RIGHT:snake.getHead().setX(xPrevious + PER_UNIT_LENGTH);break;
 			default:
 		}
-		//根據蛇頭信息和是否吃到點心更新蛇身位置
 		if(isEncountered()){
 			score++;
 			snake.getBody().addFirst(new Dot(xPrevious, yPrevious));
@@ -193,11 +177,10 @@ class GamePanel extends JPanel implements Runnable{
 			snake.getBody().addFirst(new Dot(xPrevious, yPrevious));
 			snake.getBody().removeLast();
 		}
-		//重畫並獲取焦點
 		repaint();
 		requestFocus();
 	}
-	public boolean isEncountered(){//判斷是否吃到點心
+	public boolean isEncountered(){
 		if(snake.getHead().getX() == dessert.getX() 
 		&& snake.getHead().getY() == dessert.getY()){
 			return true;
@@ -206,8 +189,7 @@ class GamePanel extends JPanel implements Runnable{
 			return false;
 		}
 	}
-	public boolean isCrushed(){//判斷遊戲是否結束
-		//先判斷是否碰觸邊框
+	public boolean isCrushed(){
 		boolean isCrushedByBorder = snake.getHead().getX() >= getWidth() / 2 + HALF_SIDE  
 		|| snake.getHead().getX() < getWidth() / 2 - HALF_SIDE 
 		|| snake.getHead().getY() >= getHeight() / 2 + HALF_SIDE 
@@ -216,7 +198,6 @@ class GamePanel extends JPanel implements Runnable{
 			information = 1;
 			return true;
 		}
-		//再判斷是否碰觸自身
 		boolean isCrushedByItself = false;
 		for(int i = 0;i < snake.getBody().size();i++){
 			if(snake.getHead().getX() == snake.getBody().get(i).getX() 
@@ -239,15 +220,14 @@ class GamePanel extends JPanel implements Runnable{
 	}
 }
 class InformationPanel extends JPanel implements Runnable{
-	private Box box = Box.createVerticalBox();//創建一個垂直盒子容器
-	private JLabel[] help = new JLabel[5];//顯示幫助信息
-	private JLabel score = new JLabel("分數：");//顯示分數
-	private JLabel show = new JLabel();//顯示信息
+	private Box box = Box.createVerticalBox();
+	private JLabel[] help = new JLabel[5];
+	private JLabel score = new JLabel("Score:");
+	private JLabel show = new JLabel();
 	public InformationPanel(){
-		//初始化數組
 		for(int i = 0;i < help.length;i++)
 			help[i] = new JLabel();
-		//配置字體
+		
 		Font font1 = new Font("DialogInput", Font.BOLD, 25);
 		Font font2 = new Font("DialogInput", Font.BOLD, 25);
 		for(int i = 0;i < help.length;i++)
@@ -256,11 +236,9 @@ class InformationPanel extends JPanel implements Runnable{
         score.setForeground(Color.BLUE);
 		show.setFont(font2);
         show.setForeground(Color.MAGENTA);
-		//配置幫助信息
-		help[0].setText("Enter開始");
-		help[1].setText("↑ ↓ ← →移動");
-		help[2].setText("Enter重新開始");
-		//配置信息面板
+		help[0].setText("Enter Start");
+		help[1].setText("Up Down Left Right Move");
+		help[2].setText("Enter Reset");
 		add(box);
 		box.add(Box.createVerticalStrut(150));
 		for(int i = 0;i < help.length;i++){
@@ -272,22 +250,22 @@ class InformationPanel extends JPanel implements Runnable{
 		box.add(Box.createVerticalStrut(30));
 		box.add(show);		
 	}
-	public void run(){//更新遊戲信息
+	public void run(){
 		while(true){
-			String string1 = "分數：" + Integer.toString(GamePanel.getScore());
+			String string1 = "Score:" + Integer.toString(GamePanel.getScore());
 			score.setText(string1);
 			String string2 = null;
 			switch(GamePanel.getInformation()){
 				case 0:break;
-				case 1:string2 = "你撞穿牆壁了！";break;
-				case 2:string2 = "你吃到自己了！";break;
+				case 1:string2 = "You hit the wall!";break;
+				case 2:string2 = "You've eaten yourself!";break;
 				default:
 			}
 			show.setText(string2);
 		}
 	}
 }
-class Snake{//蛇類
+class Snake{
 	public static final int DIRECTION_UP = 1;
 	public static final int DIRECTION_DOWN = 2;
 	public static final int DIRECTION_LEFT = 3;
@@ -321,7 +299,7 @@ class Snake{//蛇類
 		this.speed = speed;
 	}
 }
-class Dot{//點類
+class Dot{
 	private int x = 0;
 	private int y = 0;
 	public Dot(){
