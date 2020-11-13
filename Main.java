@@ -231,14 +231,17 @@ class InformationPanel extends JPanel implements Runnable{
 		Font font1 = new Font("DialogInput", Font.BOLD, 25);
 		Font font2 = new Font("DialogInput", Font.BOLD, 25);
 		for(int i = 0;i < help.length;i++)
-            help[i].setFont(font1);
+			help[i].setFont(font1);
 		score.setFont(font2);
         score.setForeground(Color.BLUE);
 		show.setFont(font2);
         show.setForeground(Color.MAGENTA);
 		help[0].setText("Enter Start");
+		help[0].setForeground(Color.PINK);
 		help[1].setText("Up Down Left Right Move");
+		help[1].setForeground(Color.PINK);
 		help[2].setText("Enter Reset");
+		help[2].setForeground(Color.PINK);
 		add(box);
 		box.add(Box.createVerticalStrut(150));
 		for(int i = 0;i < help.length;i++){
